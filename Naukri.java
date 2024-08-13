@@ -1,33 +1,40 @@
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.By;
+import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
+import java.util.concurrent.TimeUnit;
 
 public class Naukri {
-    public static void main(String[] args) {
+    private WebDriver driver;
+    private RegistrationPage registrationPage;
+
+    public void setUp() {
+        // Set the path to the ChromeDriver executable
         System.setProperty("webdriver.chrome.driver",
                 "C:\\Users\\udayd\\Downloads\\chromedriver-win64 (1)\\chromedriver-win64\\chromedriver.exe");
-        WebDriver driver = new ChromeDriver();
 
-        driver.get("https://www.naukri.com/registration/createAccount");
+        // Initialize WebDriver
+        driver = new ChromeDriver();
+        driver.manage().window().maximize();
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
-        // Add a wait to ensure page is fully loaded
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("name")));
+        // Open Naukri.com registration page
+        driver.get("https://www.naukri.com/registration/createAccount?othersrcp=22636");
 
-        RegistrationPage regPage = new RegistrationPage(driver);
-
-        // Perform actions
-        try {
-            regPage.enterName("Uday Durgam");
-            regPage.enterEmail("subhadradurgam2019@gmail.com");
-            regPage.enterPassword("Uday@123");
-            regPage.enterMobile("8698045435");
-            regPage.setWorkStatus("Fresher"); // Change to "Experienced" if needed
-        } catch (Exception e) {
-            System.out.println("Error occurred: " + e.getMessage());
-        }
-
+        // Initialize Page Object
+        registrationPage = new RegistrationPage(driver);
     }
+
+    public void testRegistration() {
+        registrationPage.enterFullName("Uday Durgam");
+        registrationPage.enterEmail("subhadradurgam2018@gmail.com");
+        registrationPage.enterPassword("Uday@123");
+        registrationPage.enterMobile("8698045435");
+        registrationPage.uploadResume("C:\\Users\\udayd\\OneDrive\\Documents\\UDAY DURGAM.pdf");
+        registrationPage.clickSubmitButton();
+    }
+
 }
